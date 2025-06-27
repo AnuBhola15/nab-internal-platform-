@@ -9,10 +9,7 @@ interface AuthContextType {
   logout: () => void;
   updateProfile: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
-<<<<<<< HEAD
-=======
   isAdmin: boolean;
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,11 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     // Simple authentication - in production, this would verify against a secure backend
     const user = database.getUserByEmail(email);
-<<<<<<< HEAD
     if (user) {
-=======
-    if (user && user.isActive !== false) {
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
       setCurrentUser(user);
       database.setCurrentUser(user);
       return true;
@@ -62,11 +55,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const newUser: User = {
         id: Date.now().toString(),
         joinDate: new Date().toISOString(),
-<<<<<<< HEAD
-=======
-        role: 'user',
-        isActive: true,
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
         ...userData
       };
 
@@ -99,12 +87,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     updateProfile,
-<<<<<<< HEAD
-    isAuthenticated: !!currentUser
-=======
     isAuthenticated: !!currentUser,
-    isAdmin: currentUser?.role === 'admin'
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
+    isAdmin: currentUser?.isAdmin || false
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

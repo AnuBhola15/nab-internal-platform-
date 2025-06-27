@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
 import { Heart, MessageCircle, Share2, Award, Briefcase } from 'lucide-react';
-=======
-import { Heart, MessageCircle, Share2, Award, Briefcase, AlertTriangle, CheckCircle } from 'lucide-react';
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
 import { formatDistanceToNow } from 'date-fns';
 import { Post, User } from '../../types';
 import { database } from '../../utils/database';
@@ -16,11 +12,7 @@ interface PostCardProps {
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) => {
-<<<<<<< HEAD
   const { currentUser } = useAuth();
-=======
-  const { currentUser, isAdmin } = useAuth();
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
   const [comment, setComment] = useState('');
   const [showComments, setShowComments] = useState(false);
 
@@ -54,21 +46,6 @@ export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) =>
     onUpdate();
   };
 
-<<<<<<< HEAD
-=======
-  const handleApprovePost = () => {
-    database.updatePost(post.id, { isApproved: true });
-    onUpdate();
-  };
-
-  const handleRejectPost = () => {
-    if (window.confirm('Are you sure you want to reject this post?')) {
-      database.deletePost(post.id);
-      onUpdate();
-    }
-  };
-
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
   const getPostIcon = () => {
     switch (post.type) {
       case 'certification':
@@ -84,36 +61,6 @@ export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) =>
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
-<<<<<<< HEAD
-=======
-      {/* Admin approval status */}
-      {isAdmin && post.isApproved === false && (
-        <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-              <span className="text-sm font-medium text-orange-800">Pending Approval</span>
-            </div>
-            <div className="flex space-x-2">
-              <button
-                onClick={handleApprovePost}
-                className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition-colors"
-              >
-                <CheckCircle className="h-4 w-4" />
-                <span className="text-xs font-medium">Approve</span>
-              </button>
-              <button
-                onClick={handleRejectPost}
-                className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200 transition-colors"
-              >
-                <span className="text-xs font-medium">Reject</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
           <span className="text-white font-medium">
@@ -201,23 +148,22 @@ export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) =>
                     {currentUser?.firstName[0]}{currentUser?.lastName[0]}
                   </span>
                 </div>
-                <div className="flex-1 flex items-center space-x-2">
-                  <input
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Write a comment..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                  />
-                  <button
-                    onClick={handleComment}
-                    disabled={!comment.trim()}
-                    className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Post
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleComment();
+                  }}
+                />
+                <button
+                  onClick={handleComment}
+                  className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  Post
+                </button>
               </div>
             </div>
           )}

@@ -61,6 +61,29 @@ const initializeData = () => {
         experience: '5 years',
         location: 'Sydney, NSW',
         isAdmin: false
+      },
+      {
+        id: '3',
+        email: 'admin@nab.com.au',
+        firstName: 'Admin',
+        lastName: 'User',
+        position: 'System Administrator',
+        department: 'IT',
+        bio: 'System administrator with full access to manage the internal platform.',
+        joinDate: '2020-01-01',
+        skills: ['System Administration', 'Security', 'User Management', 'Platform Management'],
+        certifications: [
+          {
+            id: '3',
+            name: 'ITIL Foundation',
+            issuer: 'AXELOS',
+            dateObtained: '2020-03-15',
+            verified: true
+          }
+        ],
+        experience: '10 years',
+        location: 'Melbourne, VIC',
+        isAdmin: true
       }
     ];
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(sampleUsers));

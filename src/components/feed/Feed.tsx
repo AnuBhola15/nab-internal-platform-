@@ -3,35 +3,19 @@ import { PostCard } from './PostCard';
 import { CreatePost } from './CreatePost';
 import { database } from '../../utils/database';
 import { Post, User } from '../../types';
-<<<<<<< HEAD
 
 export const Feed: React.FC = () => {
-=======
-import { useAuth } from '../../context/AuthContext';
-
-export const Feed: React.FC = () => {
-  const { isAdmin } = useAuth();
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
   const loadData = () => {
-<<<<<<< HEAD
     setPosts(database.getPosts());
-=======
-    // Show all posts for admin, only approved posts for regular users
-    setPosts(isAdmin ? database.getPosts() : database.getApprovedPosts());
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
     setUsers(database.getUsers());
   };
 
   useEffect(() => {
     loadData();
-<<<<<<< HEAD
   }, []);
-=======
-  }, [isAdmin]);
->>>>>>> f63cfc3f7cf8be3f940f87d4c6dffad513edeede
 
   return (
     <div className="max-w-2xl mx-auto p-6">
