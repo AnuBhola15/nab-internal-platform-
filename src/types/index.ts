@@ -14,6 +14,8 @@ export interface User {
   location: string;
   phone?: string;
   linkedIn?: string;
+  role?: 'user' | 'admin';
+  isActive?: boolean;
 }
 
 export interface Certification {
@@ -35,6 +37,7 @@ export interface Post {
   likes: string[];
   comments: Comment[];
   attachments?: string[];
+  isApproved?: boolean;
 }
 
 export interface Comment {
@@ -48,4 +51,12 @@ export interface Comment {
 export interface AuthState {
   isAuthenticated: boolean;
   currentUser: User | null;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  totalPosts: number;
+  totalCertifications: number;
+  activeUsers: number;
+  pendingPosts: number;
 }

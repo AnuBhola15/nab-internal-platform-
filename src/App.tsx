@@ -6,9 +6,10 @@ import { Sidebar } from './components/layout/Sidebar';
 import { Feed } from './components/feed/Feed';
 import { ColleaguesList } from './components/colleagues/ColleaguesList';
 import { UserProfile } from './components/profile/UserProfile';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, isAdmin } = useAuth();
   const [currentView, setCurrentView] = useState('feed');
 
   if (!isAuthenticated) {
@@ -23,6 +24,8 @@ const AppContent: React.FC = () => {
         return <ColleaguesList />;
       case 'profile':
         return currentUser ? <UserProfile user={currentUser} isOwnProfile={true} /> : null;
+      case 'admin':
+        return isAdmin ? <AdminDashboard /> : <Feed />;
       case 'certifications':
         return (
           <div className="max-w-4xl mx-auto p-6">

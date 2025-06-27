@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, Award, Briefcase } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Award, Briefcase, AlertTriangle, CheckCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Post, User } from '../../types';
 import { database } from '../../utils/database';
@@ -12,7 +12,7 @@ interface PostCardProps {
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
   const [comment, setComment] = useState('');
   const [showComments, setShowComments] = useState(false);
 
@@ -46,6 +46,18 @@ export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) =>
     onUpdate();
   };
 
+  const handleApprovePost = () => {
+    database.updatePost(post.id, { isApproved: true });
+    onUpdate();
+  };
+
+  const handleRejectPost = () => {
+    if (window.confirm('Are you sure you want to reject this post?')) {
+      database.deletePost(post.id);
+      onUpdate();
+    }
+  };
+
   const getPostIcon = () => {
     switch (post.type) {
       case 'certification':
@@ -61,6 +73,33 @@ export const PostCard: React.FC<PostCardProps> = ({ post, author, onUpdate }) =>
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+      {/* Admin approval status */}
+      {isAdmin && post.isApproved === false && (
+        <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <span className="text-sm font-medium text-orange-800">Pending Approval</span>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleApprovePost}
+                className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-800 rounded hover:bg-green-200 transition-colors"
+              >
+                <CheckCircle className="h-4 w-4" />
+                <span className="text-xs font-medium">Approve</span>
+              </button>
+              <button
+                onClick={handleRejectPost}
+                className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-800 rounded hover:bg-red-200 transition-colors"
+              >
+                <span className="text-xs font-medium">Reject</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
           <span className="text-white font-medium">

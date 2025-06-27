@@ -3,19 +3,22 @@ import { PostCard } from './PostCard';
 import { CreatePost } from './CreatePost';
 import { database } from '../../utils/database';
 import { Post, User } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 export const Feed: React.FC = () => {
+  const { isAdmin } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
   const loadData = () => {
-    setPosts(database.getPosts());
+    // Show all posts for admin, only approved posts for regular users
+    setPosts(isAdmin ? database.getPosts() : database.getApprovedPosts());
     setUsers(database.getUsers());
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [isAdmin]);
 
   return (
     <div className="max-w-2xl mx-auto p-6">

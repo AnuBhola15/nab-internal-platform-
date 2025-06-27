@@ -1,5 +1,6 @@
 import React from 'react';
-import { Home, Users, User, Award, Settings } from 'lucide-react';
+import { Home, Users, User, Award, Settings, Shield } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   currentView: string;
@@ -7,11 +8,14 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
+  const { isAdmin } = useAuth();
+
   const menuItems = [
     { id: 'feed', label: 'Feed', icon: Home },
     { id: 'colleagues', label: 'Colleagues', icon: Users },
     { id: 'profile', label: 'My Profile', icon: User },
     { id: 'certifications', label: 'Certifications', icon: Award },
+    ...(isAdmin ? [{ id: 'admin', label: 'Admin Dashboard', icon: Shield }] : []),
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
@@ -33,6 +37,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
                 >
                   <Icon className="h-5 w-5 mr-3" />
                   {item.label}
+                  {item.id === 'admin' && (
+                    <span className="ml-auto px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                      Admin
+                    </span>
+                  )}
                 </button>
               </li>
             );

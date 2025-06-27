@@ -9,7 +9,7 @@ interface CreatePostProps {
 }
 
 export const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
   const [content, setContent] = useState('');
   const [postType, setPostType] = useState<Post['type']>('general');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +27,8 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
       type: postType,
       timestamp: new Date().toISOString(),
       likes: [],
-      comments: []
+      comments: [],
+      isApproved: isAdmin // Admin posts are auto-approved, regular posts need approval
     };
 
     database.createPost(newPost);
@@ -89,13 +90,20 @@ export const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
               </div>
             </div>
             
-            <button
-              type="submit"
-              disabled={!content.trim() || isSubmitting}
-              className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Posting...' : 'Post'}
-            </button>
+            <div className="flex items-center space-x-3">
+              {!isAdmin && (
+                <p className="text-xs text-gray-500">
+                  Posts require admin approval
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={!content.trim() || isSubmitting}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Posting...' : 'Post'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

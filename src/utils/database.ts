@@ -1,4 +1,4 @@
-import { User, Post, Comment } from '../types';
+import { User, Post, Comment, AdminStats } from '../types';
 
 const STORAGE_KEYS = {
   USERS: 'nab_users',
@@ -10,6 +10,22 @@ const STORAGE_KEYS = {
 const initializeData = () => {
   if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
     const sampleUsers: User[] = [
+      {
+        id: 'admin-1',
+        email: 'admin@nab.com.au',
+        firstName: 'System',
+        lastName: 'Administrator',
+        position: 'Platform Administrator',
+        department: 'IT Administration',
+        bio: 'NAB Connect platform administrator responsible for user management and system oversight.',
+        joinDate: '2021-01-01',
+        skills: ['System Administration', 'User Management', 'Platform Oversight'],
+        certifications: [],
+        experience: '10+ years',
+        location: 'Melbourne, VIC',
+        role: 'admin',
+        isActive: true
+      },
       {
         id: '1',
         email: 'sarah.johnson@nab.com.au',
@@ -34,7 +50,9 @@ const initializeData = () => {
         experience: '8 years',
         location: 'Melbourne, VIC',
         phone: '+61 3 9xxx xxxx',
-        linkedIn: 'linkedin.com/in/sarahjohnson'
+        linkedIn: 'linkedin.com/in/sarahjohnson',
+        role: 'user',
+        isActive: true
       },
       {
         id: '2',
@@ -56,7 +74,9 @@ const initializeData = () => {
           }
         ],
         experience: '5 years',
-        location: 'Sydney, NSW'
+        location: 'Sydney, NSW',
+        role: 'user',
+        isActive: true
       }
     ];
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(sampleUsers));
@@ -79,7 +99,8 @@ const initializeData = () => {
             timestamp: new Date().toISOString(),
             likes: []
           }
-        ]
+        ],
+        isApproved: true
       }
     ];
     localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(samplePosts));
@@ -108,6 +129,12 @@ export const database = {
     }
   },
 
+  deleteUser: (userId: string): void => {
+    const users = database.getUsers();
+    const filteredUsers = users.filter(u => u.id !== userId);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(filteredUsers));
+  },
+
   getUserById: (id: string): User | null => {
     const users = database.getUsers();
     return users.find(u => u.id === id) || null;
@@ -124,6 +151,14 @@ export const database = {
     return JSON.parse(localStorage.getItem(STORAGE_KEYS.POSTS) || '[]');
   },
 
+  getApprovedPosts: (): Post[] => {
+    return database.getPosts().filter(post => post.isApproved !== false);
+  },
+
+  getPendingPosts: (): Post[] => {
+    return database.getPosts().filter(post => post.isApproved === false);
+  },
+
   createPost: (post: Post): void => {
     const posts = database.getPosts();
     posts.unshift(post);
@@ -137,6 +172,26 @@ export const database = {
       posts[index] = { ...posts[index], ...updates };
       localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(posts));
     }
+  },
+
+  deletePost: (postId: string): void => {
+    const posts = database.getPosts();
+    const filteredPosts = posts.filter(p => p.id !== postId);
+    localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(filteredPosts));
+  },
+
+  // Admin functions
+  getAdminStats: (): AdminStats => {
+    const users = database.getUsers();
+    const posts = database.getPosts();
+    
+    return {
+      totalUsers: users.filter(u => u.role !== 'admin').length,
+      totalPosts: posts.length,
+      totalCertifications: users.reduce((acc, user) => acc + user.certifications.length, 0),
+      activeUsers: users.filter(u => u.isActive && u.role !== 'admin').length,
+      pendingPosts: posts.filter(p => p.isApproved === false).length
+    };
   },
 
   // Authentication
